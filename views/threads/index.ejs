@@ -1,0 +1,17 @@
+<%- include('../partials/header.ejs') %>
+<div class="thread content">
+    <a href="/threads/create" class="btn">New Thread</a>
+    <h2>All threads</h2>
+    <% if (threads.length> 0) { %>
+        <% threads.forEach(thread => { %>
+            <a class="single" href="/threads/id/<%= thread._id%>">
+                <h2 class="title"><%= thread.title %></h2>
+                <h3 class="author"><%= thread.author %></h3>
+                <h3 class="date"><%= thread.createdAt %></h3>
+            </a>
+            <% }) %>
+                <% } else { %>
+                    <p>There are no threads to display...</p>
+                    <% } %>
+</div>
+<%- include('../partials/footer.ejs') %>

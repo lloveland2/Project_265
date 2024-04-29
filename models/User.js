@@ -3,6 +3,13 @@ const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Please enter a username'],
+        unique: true,
+        minlength: [6, 'Usernames must be between 6-32 characters long'],
+        maxlength: [32, 'Usernames must be between 6-32 characters long'],
+    },
     email: {
         type: String,
         required: [true, 'Please enter an email'],
@@ -39,5 +46,4 @@ userSchema.statics.login = async function(email, password) {
 };
 
 const User = mongoose.model('user', userSchema);
-
 module.exports = User;

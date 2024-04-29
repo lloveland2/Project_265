@@ -1,0 +1,54 @@
+<%- include('../partials/header.ejs') %>
+
+<div class="form-div content">
+  New Thread
+  <form action="/threads/create" method="post">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" max="80" required />
+    <div class="title error"></div>
+    <label for="content">Post</label>
+    <textarea id="content" name="content" max="3000" required></textarea>
+    <div class="content error"></div>
+    <button>Submit</button>
+  </form>
+</div>
+
+<%- include('../partials/footer.ejs') %>
+
+<script>
+    const form = document.querySelector("form");
+    const titleError = document.querySelector(".title.error");
+    const contentError = document.querySelector(".content.error");
+  
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+  
+      // reset errors
+      titleError.textContent = "";
+      contentError.textContent = "";
+  
+      // get values
+      const author = '<%= user._id %>';
+      const title = form.title.value;
+      const content = form.content.value;
+  
+      try {
+        const res = await fetch("/threads/create", {
+          method: "POST",
+          body: JSON.stringify({ author, title, content }),
+          headers: { "Content-Type": "application/json" },
+        });
+        const data = await res.json();
+        console.log(data);
+        if (data.errors) {
+          titleError.textContent = data.errors.title;
+          contentError.textContent = data.errors.content;
+        }
+        if (data.user) {
+          location.assign("/");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    });
+  </script>

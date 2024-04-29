@@ -7,14 +7,16 @@
 </head>
 <body>
   <nav>
-    <h1><a href="/">Ninja Smoothies</a></h1>
+      <a href="/"><img src="/logo.png" /></a>
     <ul>
       <% if (user) { %>
-        <li>Welcome, <%= user.email %></li>
-        <li><a href="/logout">Log out</a></li>
+        <li>Welcome, <%= user.name %>.</li>
+        <li><a href="/smoothies">Devlog</a></li>
+        <li><a href="/threads">Forum</a></li>
+        <li><a href="/logout" class="btn">Log Out</a></li>
       <% } else { %>
         <li><a href="/login">Log in</a></li>
-        <li><a href="/signup" class="btn">Sign up</a></li>
+        <li><a href="/signup" class="btn">Join the Beta!</a></li>
       <% } %>       
     </ul>
   </nav>

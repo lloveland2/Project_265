@@ -1,47 +1,44 @@
 <%- include('../partials/header.ejs') %>
-
-<div class="form-div content">
-  New Thread
-  <form action="/threads/create" method="POST">
-    <label for="title">Title</label>
-    <input type="text" id="title" name="title" max="80" required />
-    <div class="title error"></div>
-    <label for="content">Post</label>
-    <textarea id="content" name="content" max="3000" required></textarea>
-    <div class="content error"></div>
-    <button>Submit</button>
-  </form>
+<div class="thread content">
+    <h2 class="title"><%= thread.title %></h2>
+    <h3 class="author"><%= thread.author.name %></h3>
+    <% posts.forEach(post => { %>
+        <h3 class="author"><%= post.author.name %></h3>
+            <h3 class="date"><%= post.createdAt %></h3>
+            <h3 class="content"><%= post.content %></h3>
+        <% }) %>
+        <form action="/threads/id/<%= thread._id %>", method="POST" >
+            <textarea id="content" name="content" max="3000" required></textarea>
+            <div class="content error"></div>
+            <button>Submit</button>
+        </form>
 </div>
-
 <%- include('../partials/footer.ejs') %>
 
 <script>
     const form = document.querySelector("form");
-    const titleError = document.querySelector(".title.error");
     const contentError = document.querySelector(".content.error");
   
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
   
       // reset errors
-      titleError.textContent = "";
       contentError.textContent = "";
   
       // get values
       const author = '<%= user._id %>';
-      const title = form.title.value;
+      const thread = '<%= thread._id %>';
       const content = form.content.value;
   
       try {
-        const res = await fetch("/threads/create", {
+        const res = await fetch("/threads/id/" + thread, {
           method: "POST",
-          body: JSON.stringify({ author, title, content }),
+          body: JSON.stringify({ author, thread, content }),
           headers: { "Content-Type": "application/json" },
         });
         const data = await res.json();
         console.log(data);
         if (data.errors) {
-          titleError.textContent = data.errors.title;
           contentError.textContent = data.errors.content;
         }
         if (data.user) {

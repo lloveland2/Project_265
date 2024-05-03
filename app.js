@@ -29,7 +29,7 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // routes
 app.get('*', checkUser);
-app.get('/', (req, res) => res.render('home'));
-app.get('/smoothies', requireAuth, (req, res) => res.render('smoothies'));
+app.get('/', (req, res) => res.render('home', { title: 'Dreamscape Games – Home' }));
+app.get('/devlog', requireAuth, (req, res) => res.render('smoothies', {title: 'Dreamscape Games – Devlog'}));
 app.use('/threads', requireAuth, threadRoutes);
 app.use(authRoutes);

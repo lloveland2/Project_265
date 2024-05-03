@@ -114,3 +114,9 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+public/img/fundamentals.svg
+public/img/react.svg
+public/img/showcase.svg
+public/ninjastyles.css
+views/bootstraptut.ejs

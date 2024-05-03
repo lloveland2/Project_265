@@ -41,11 +41,11 @@ const createToken = (id) => {
 };
 
 module.exports.signup_get = (req, res) => {
-    res.render('signup');
+    res.render('signup', {title: 'Dreamscape Games – Sign Up'});
 }
 
 module.exports.login_get = (req, res) => {
-    res.render('login');
+    res.render('login', {title: 'Dreamscape Games – Log In'});
 }
 
 module.exports.signup_post = async (req, res) => {

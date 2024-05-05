@@ -11,12 +11,12 @@
   crossorigin="anonymous"
   >
 
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/custom.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-blue-800 fixed-top text-nowrap">
   <div class="container">
-    <a href="/" class="navbar-brand"><img src="img/logo.png" alt=""><!--<object data="img/logo.svg" type="image/svg+xml"><img src="img/logo.png" alt="Synthro Studios"></object>--></a>
+    <a href="/" class="navbar-brand mx-auto"><img src="/img/logo.svg" alt="" height="60px"></a>
     <button
       class="navbar-toggler"
       type="button"
@@ -26,18 +26,17 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navmenu">
-      <div class="navbar-nav ms-auto">
+      <div class="navbar-nav ms-auto bg-transparent">
         <% if (user) { %>
-          <div class="nav-link disabled text-light">Hi, <%= user.name %></div>
-          <a href="/devlog" class="nav-link">Devlog</a>
-          <a href="/threads" class="nav-link">Forum</a>
-          <a href="/logout" class="nav-link">Log Out</a>
+          <div class="navbar-text d-sm-none d-lg-grid text-light px-3"><h5><%= user.name %></h5></div>
+          <div class="d-grid nav-item btn"><a href="/devlog" class="nav-link px-3"><h5>Devlog</h5></a></div>
+          <div class="d-grid nav-item btn"><a href="/threads" class="nav-link px-3"><h5>Forum</h5></a></div>
+          <div class="d-grid nav-item btn"><a href="/logout" class="nav-link px-3"><h5>Log Out</h5></a></div>
           <% } else { %>
-            <a href="/login" class="nav-link">Log in</a>
-            <a href="/signup" class="nav-link">Join the Beta!</a>
+            <div class="d-grid nav-item btn"><a href="/login" class="nav-link px-3"><h5>Log in</h5></a></div>
+            <div class="d-grid nav-item btn"><a href="/signup" class="nav-link px-3"><h5>Join the Beta!</h5></a></div>
             <% } %>
           </div>
     </div>
   </div>
 </nav>
-  

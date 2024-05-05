@@ -1,17 +1,27 @@
 <%- include('partials/header'); -%>
 
-<div class="container">
-    <form action="/signup">
-        <h2>Login</h2>
-        <label for="email">Email</label>
-        <input type="text" name="email"/>
-        <div class="email error"></div>
-        <label for="password">Password</label>
-        <input type="password" name="password"/>
-        <div class="password error"></div>
-        <button>login</button>
+<section class="bg-dark text-light p-lg-0 pt-lg-5">
+  <div class="container text-center py-5">
+    <p class="lead">Log In</p>
+    <form action="/login" method="POST">
+      <div class="row justify-content-md-center">
+        <div class="col-6 form-floating mb-3">
+          <label class=" form-label text-dark ms-3" for="email">Email</label>
+          <input class="form-control" type="email" name="email" required />
+          <div class="form-text error email"></div>
+        </div>
+      </div>
+      <div class="row justify-content-md-center">
+        <div class="col-6 form-floating mb-3 ">
+          <label class="form-label text-dark ms-3" for="password">Password</label>
+          <input class="form-control" type="password" name="password" required />
+          <div class="form-text error password"></div>
+        </div>
+      </div>
+      <div class="col"><button class="btn btn-primary">Log In</button></div>
     </form>
-</div>
+  </div>
+</section>
 
 <%- include('partials/footer'); -%>
 

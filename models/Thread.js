@@ -6,16 +6,23 @@ const threadSchema = new Schema({
     author: {
         type: Schema.Types.ObjectID,
         ref: "User",
-        required: true,
+        required: true
     },
     title: {
         type: String,
         required: [true, 'Please title your thread.'],
         maxlength: [80, 'Title must be 80 characters or less.']
+    },
+    createdAt: {
+        type: Date
     }
 },
-{ timestamps: true }
 );
+
+threadSchema.pre('save', async (next) => {
+    this.createdAt = await Date.now();
+    next();
+});
 
 const Thread = mongoose.models.Thread || mongoose.model('Thread', threadSchema);
 module.exports = Thread;

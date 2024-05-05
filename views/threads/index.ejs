@@ -1,19 +1,50 @@
 <%- include('../partials/header.ejs') %>
-<div class="thread content">
-    <a href="/threads/create" class="btn">New Thread</a>
-    <h2>All threads</h2>
-    <% if (threads.length> 0) { %>
-        <% threads.forEach(thread => { %>
-            <div class="container-fluid">
-                <a class="single" href="/threads/id/<%= thread._id%>">
-                    <h2 class="title"><%= thread.title %></h2>
-                    <h3 class="author"><%= thread.author.name %></h3>
-                    <h3 class="date"><%= thread.createdAt %></h3>
-                </a>
-            </div>
-            <% }) %>
-                <% } else { %>
-                    <p>There are no threads to display...</p>
-                    <% } %>
-</div>
+
+
+<section class="bg-dark text-light p-lg-0 pt-lg-5 text-left">
+  <div class="container pt-4 pb-5">
+    <div class="thread content">
+      
+      <div class="d-flex flex-row mb-3">
+          <p class="h1">All threads</p>
+          <a href="/threads/create" class="btn btn-primary align-self-end float-right">Create New</a>
+        </div>
+
+      <% if (threads.length> 0) { %>
+      <% time = Date.now() %>
+
+                
+      <% threads.forEach(thread => { %>
+                    
+      <div class="container striped d-block rounded rounded-2 py-1 ">
+        <a class="id link-underline link-underline-opacity-0 text-light" href="/threads/id/<%= thread._id%>">
+        <div class="mb-3">
+            <p class="h4 title"><%= thread.title %></p>
+          </div>
+          <div class="mb-3">
+            <p class="author">by <%= thread.author.name %></p>
+          </div>
+          <div class="mb-3">
+            <p class="created-at">            
+              <% age = Math.abs(time - thread.createdAt) %>
+              <%- include('../partials/time.ejs') %>
+              
+            </p>
+          </div>
+        </a>
+      </div>
+
+      <% })} else { %>
+
+      <div class="mx-auto">
+        <p class="lead pt-3 pb-2">There are no threads to display...</p>
+      </div>
+        
+      <% } %>
+
+    </div>
+  </div>
+</section>
+
 <%- include('../partials/footer.ejs') %>
+

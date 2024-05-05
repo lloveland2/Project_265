@@ -1,18 +1,37 @@
 <%- include('../partials/header.ejs') %>
-<div class="thread content">
-    <h2 class="title"><%= thread.title %></h2>
-    <h3 class="author"><%= thread.author.name %></h3>
+
+<section class="bg-dark text-light p-lg-0 pt-lg-5">
+  <div class="container py-3 text-end">
+    <div class="row"></div>
+    <div class="col-3">
+      <p class="display-6 title"><%= thread.title %></p>
+      <p class="h4 author"><%= thread.author.name %></p>
+    </div>
+  </div>
+</section>
+<section class="bg-dark text-light">
+  <div class="container py-3">
     <% posts.forEach(post => { %>
-        <h3 class="author"><%= post.author.name %></h3>
-            <h3 class="date"><%= post.createdAt %></h3>
-            <h3 class="content"><%= post.content %></h3>
-        <% }) %>
-        <form action="/threads/id/<%= thread._id %>", method="POST" >
-            <textarea id="content" name="content" max="3000" required></textarea>
-            <div class="content error"></div>
-            <button>Submit</button>
-        </form>
-</div>
+      <div class="container striped d-block rounded rounded-2 py-1">
+        <p class="content"><%= post.content %></p>
+        <p class="author"><%= post.author.name %></p>
+        <p class="created-at">
+          <% age = Math.abs(time - post.createdAt) %>
+          <%- include('../partials/time.ejs') %>
+        </p>
+      </div>
+      <% }) %>
+    </div>
+</section>
+<section class="bg-dark text-light">
+  <form action="/threads/id/<%= thread._id %>", method="POST" >
+    <textarea id="content" name="content" max="3000" required></textarea>
+    <div class="content error"></div>
+    <button type="submit">Submit</button>
+  </form>
+</section>
+
+
 <%- include('../partials/footer.ejs') %>
 
 <script>
@@ -49,3 +68,4 @@
       }
     });
   </script>
+

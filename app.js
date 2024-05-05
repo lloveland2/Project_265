@@ -5,7 +5,6 @@ const authRoutes = require('./routes/authRoutes');
 const threadRoutes = require('./routes/threadRoutes');
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
-
 const app = express();
 
 // middleware
@@ -29,7 +28,8 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 
 // routes
 app.get('*', checkUser);
-app.get('/', (req, res) => res.render('home', { title: 'Dreamscape Games – Home' }));
-app.get('/devlog', requireAuth, (req, res) => res.render('smoothies', {title: 'Dreamscape Games – Devlog'}));
+app.get('/', (req, res) => res.render('home', { title: 'Synthro Studios – Home' }));
+app.get('/bootstrap', (req, res) => res.render('bootstraptut'));
+app.get('/devlog', requireAuth, (req, res) => res.render('smoothies', {title: 'Synthro Studios – Devlog'}));
 app.use('/threads', requireAuth, threadRoutes);
 app.use(authRoutes);

@@ -1,14 +1,22 @@
 <%- include('partials/header'); -%>
 
-<header>
-  <div class="smoothie">
-    <img src="/smoothie.png" alt="">
-  </div>
-  <div class="headings">
-    <h2>Welcome</h2>
-    <h3>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Enim animi reprehenderit molestiae fugiat ad libero.</h3>
-  </div>
-</header>
+  <!-- Showcase -->
+  <section class="bg-dark text-light p-lg-0 pt-lg-5 text-center">
+    <div class="container">
+      <div class="d-sm-flex" >
+        <div class="py-5">
+          <img class="img-fluid" src="img/icon.svg" width="128px" alt="">
+            <h1 class="text-nowrap">Welcome to <br><span class="text-blue-200">Synthro Studios</span></h1>          
+          <p class="lead m-4">
+            We are an up-and-coming indie studio looking to make games (and a name for ourselves). Our first title is currently in development, and we're looking for future playtesters! If you'd like to help us out, consider applying to our closed beta!
+          </p>
+          <div class="d-grid col-8 mb-3 mx-auto">
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#enroll">Join the Beta!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
 
 <%- include('partials/footer'); -%>

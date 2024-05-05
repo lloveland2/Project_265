@@ -1,0 +1,45 @@
+<% if ( age < 6e4 ) { %>
+  Just Now
+<% } else if (age < 3.6e6 ) { %>
+  <% result = Math.trunc( age / 6e4 ) %>
+  <% if ( result > 1 ) { %>
+    <%= result %> minutes ago
+  <% } else { %>
+    <%= result %> minute ago
+  <% } %>
+<% } else if ( age < 8.64e7 ) { %>
+  <% result = Math.trunc(age / 3.6e6 ) %>
+  <% if ( result > 1 ) { %>
+    <%= result %> hours ago
+  <% } else { %>
+    <%= result %> hour ago
+  <% } %>
+<% } else if (age < 6.048e8 ) { %>
+  <% result = Math.trunc(age / 8.64e7 ) %>
+  <% if ( result > 1 ) { %>
+    <%= result %> days ago
+  <% } else { %>
+    <%= result %> day ago
+  <% } %>
+<% } else if (age < 2.4192e9 ) { %>
+  <% result = Math.trunc(age / 6.048e8 ) %>
+  <% if ( result > 1 ) { %>
+    <%= result %> weeks ago
+  <% } else { %>
+    <%= result %> week ago
+  <% } %>
+  <% } else if (age < 2.90304e10 ) { %>
+    <% result = Math.trunc(age / 2.4192e9 ) %>
+    <% if ( result > 1 ) { %>
+      <%= result %> months ago
+    <% } else { %>
+      <%= result %> month ago
+    <% } %>
+  <% } else { %>
+    <% result = Math.trunc(age / 2.90304e10 ) %>
+    <% if ( result > 1 ) { %>
+      <%= result %> years ago
+    <% } else { %>
+      <%= result %> year ago
+    <% } %>
+  <% } %>

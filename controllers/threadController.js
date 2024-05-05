@@ -23,7 +23,7 @@ const thread_index_get = (req, res) => {
     })
     .sort({ createdAt: -1 })
     .then((result) => {
-      res.render("threads/index", { title: "Dreamscape Forums – All Threads", threads: result });
+      res.render("threads/index", { title: "Synthro Studios – All Threads", threads: result });
     })
     .catch((err) => {
       console.log(err);
@@ -32,14 +32,14 @@ const thread_index_get = (req, res) => {
 
 const thread_id_get = (req, res) => {
   id = req.params.id
-  Thread.findById(id)
+  thread = Thread.findById(id)
   .populate({ path: 'author', select: 'name' })
   .then((thread) => {
     Post.find({ thread: req.params.id })
     .populate({ path: 'author', select: 'name' })
     .sort({ createdAt: 1 })
     .then((posts) => {
-    res.render("threads/id", {title : 'Dreamscape Forums – ' + thread.title ,posts, thread});
+    res.render("threads/id", {title : 'Synthro Studios – ' + thread.title ,posts, thread});
     })
   })
   .catch((err) => {
@@ -50,7 +50,8 @@ const thread_id_get = (req, res) => {
 const thread_id_post = async (req, res) => {
   try {
       const { author, thread, content } = req.body;
-      Post.create({ author, thread, content })
+      createdAt = Date.now();
+      Post.create({ author, thread, content, createdAt })
       .then(res.redirect('/threads/id/'+ thread) );
   }
   catch (err) {
@@ -68,8 +69,9 @@ const thread_create_get = (req, res) => {
 const thread_create_post = async (req, res) => {
     try {
         const { author, title, content } = req.body;
-        const thread = new Thread({author, title})
-        const post = new Post({ author, thread: thread._id, content })
+        createdAt = Date.now();
+        const thread = new Thread({author, title, createdAt})
+        const post = new Post({ author, thread: thread._id, content, createdAt })
         thread.save()
         .then(post.save()
         .then(res.redirect('/threads/id/'+ thread._id) ));

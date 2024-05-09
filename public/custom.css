@@ -5712,4 +5712,12 @@ body::before {
   background-color: #031633;
 }
 
+.form-floating > .form-control::placeholder {
+  color: revert;
+}
+
+.form-floating > .form-control:not(:focus)::placeholder {
+  color: transparent;
+}
+
 /*# sourceMappingURL=custom.css.map */

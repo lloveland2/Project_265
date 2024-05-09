@@ -1,29 +1,58 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const { isEmail } = require('validator');
 
 // handle errors
 const handleErrors = (err) => {
-    console.log(err.message, err.code);
+    console.log(err.message,"\n", err.code,"\n", err.keyValue);
     let errors = { name: '', email: '', password: '' };
     
-    // incorrect email
-    if (err.message === 'incorrect email') {
+    
+    // Unregistered Email
+    if (err.message.includes('unregistered email')) {
         errors.email = 'That email is not registered';
     }
-    
-    // incorrect password
-    if (err.message === 'incorrect password') {
-        errors.password = 'That password is incorrect';
+
+    // Invalid Email
+    if (err.message.includes('invalid email')) {
+        errors.email = 'That email is invalid';
     }
     
-    // duplicate email error
-    if (err.code === 11000) {
-        errors.email = 'that email is already registered';
+    // Empty Email Field
+    if (err.message.includes('no email')) {
+        errors.email = 'Please enter an email';
+    }
+    
+    // Incorrect password
+    if (err.message.includes('mismatched password')) {
+        errors.password = 'Incorrect password';
+    }
+
+    // Incorrect password
+    if (err.message.includes('invalid password')) {
+        errors.password = 'Incorrect password';
+    }
+
+    // Empty Password Field
+    if (err.message.includes('no password')) {
+        errors.password = 'Please enter a password';
+    }
+
+
+    // duplicate username error
+    if (err.code === 11000 && Object.keys(err.keyValue) == 'name') {
+        errors.name = 'That username is already registered';
         return errors;
     }
 
-    // validation errors
-    if (err.message.includes('user validation failed')) {
+    // duplicate email error
+    if (err.code === 11000 && Object.keys(err.keyValue) == 'email') {
+        errors.email = 'That email is already registered';
+        return errors;
+    }
+
+    // Mongoose validation errors
+    if (err.message.includes('User validation failed')) {
         Object.values(err.errors).forEach(({ properties }) => {
             errors[properties.path] = properties.message; 
         });
@@ -35,17 +64,17 @@ const handleErrors = (err) => {
 // create json web token
 const maxAge = 3 * 24 * 60 * 60;
 const createToken = (id) => {
-    return jwt.sign({ id }, 'net ninja secret', {
+    return jwt.sign({ id }, process.env.SECRET, {
         expiresIn: maxAge
     });
 };
 
 module.exports.signup_get = (req, res) => {
-    res.render('signup', {title: 'Dreamscape Games – Sign Up'});
+    res.render('signup', {title: 'Synthro Studios – Sign Up'});
 }
 
 module.exports.login_get = (req, res) => {
-    res.render('login', {title: 'Dreamscape Games – Log In'});
+    res.render('login', {title: 'Synthro Studios – Log In'});
 }
 
 module.exports.signup_post = async (req, res) => {
@@ -66,14 +95,27 @@ module.exports.signup_post = async (req, res) => {
 
 module.exports.login_post = async (req, res) => {
     const { email, password } = req.body;
-
+    fieldErrors = '';
+    if (email == '') {
+        fieldErrors += ' no email '
+    }
+    else if (!isEmail(email)) {
+        fieldErrors += ' invalid email ';
+    }
     try {
+    if (password == '') {
+        fieldErrors += ' no password ';
+    }
+    else if ( password.legnth < 6 ) {
+        fieldErrors += ' invalid password ';
+    }
     const user = await User.login(email, password);
     const token = createToken(user._id);
     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
     res.status(200).json({ user: user._id });
     }
     catch (err) {
+        err.message += fieldErrors;
         const errors = handleErrors(err);
         res.status(400).json({ errors });
     }

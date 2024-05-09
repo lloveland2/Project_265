@@ -1,0 +1,42 @@
+<%- include('./partials/header.ejs') %>
+
+
+<section class="bg-dark text-light p-lg-0 pt-lg-5 text-left">
+  <div class="container pt-4 pb-5">
+    <div class="log content">
+      
+      <div class="d-flex flex-row mb-3">
+          <p class="h1">All logs</p>
+        </div>
+
+      <% if (logs.length> 0) { %>
+        <% time = Date.now() %>
+
+
+        <% logs.forEach(log => { %>
+
+          <div class="container striped d-block rounded rounded-2 py-1 ">
+            <a class="id link-underline link-underline-opacity-0 text-light" href="/logs/id/<%= log._id%>">
+            <div class="mb-3">
+              <p class="h4 title"><%= log.title %></p>
+            </div>
+            <div class="mb-3">
+              <p class="content"><%= log.content %></p>
+            </div>
+            </a>
+          </div>
+        <% }) %>
+      <% } else { %>
+
+        <div class="mx-auto">
+          <p class="lead pt-3 pb-2">There are no logs to display...</p>
+        </div>
+        
+      <% } %>
+
+    </div>
+  </div>
+</section>
+
+<%- include('./partials/footer.ejs') %>
+

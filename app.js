@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const authRoutes = require('./routes/authRoutes');
 const threadRoutes = require('./routes/threadRoutes');
+const logRoutes = require('./routes/logRoutes');
 const cookieParser = require('cookie-parser');
 const { requireAuth, checkUser } = require('./middleware/authMiddleware');
 const app = express();
@@ -30,6 +31,6 @@ mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
 app.get('*', checkUser);
 app.get('/', (req, res) => res.render('home', { title: 'Synthro Studios – Home' }));
 app.get('/bootstrap', (req, res) => res.render('bootstraptut'));
-app.get('/devlog', requireAuth, (req, res) => res.render('smoothies', {title: 'Synthro Studios – Devlog'}));
+app.use('/devlog', requireAuth, logRoutes);
 app.use('/threads', requireAuth, threadRoutes);
 app.use(authRoutes);

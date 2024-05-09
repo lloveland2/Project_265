@@ -1,31 +1,31 @@
 <%- include('partials/header'); -%>
 
 <section class="bg-dark text-light p-lg-0 pt-lg-5">
-    <div class="container text-center py-5">
-      <p class="lead">Log In</p>
-      <form action="/signup" method="POST">
-          <div class="row justify-content-md-center">
-            <div class="col-6 form-floating mb-3">
-              <label class=" form-label text-dark ms-3" for="name">Userame</label>
-              <input class="form-control" type="text" name="name" required />
-              <div class="form-text error name"></div>
+    <div class="container text-center py-5 position-relative">
+      <p class="lead">Sign Up</p>
+      <form class="needs-validation" action="/signup" method="POST" novalidate>
+          <div class="row justify-content-md-center py-4">
+            <div class="col-6 form-floating">
+              <input class="form-control name" type="text" name="name" id="name" minlength="6" maxlength="32" placeholder="Username"/>
+              <label class="text-dark ms-2" for="name">Username</label>
+              <div class="invalid-tooltip name mt-2"></div>
             </div>
           </div>
-          <div class="row justify-content-md-center">
-            <div class="col-6 form-floating mb-3">
-              <label class=" form-label text-dark ms-3" for="email">Email</label>
-              <input class="form-control" type="email" name="email" required />
-              <div class="form-text error email"></div>
+          <div class="row justify-content-md-center py-4">
+            <div class="col-6 form-floating position-relative">
+              <input class="form-control email" type="email" name="email" id="email" placeholder="johndoe@mail.com" required />
+              <label class="text-dark ms-2" for="email">Email</label>
+              <div class="invalid-tooltip email mt-2"></div>
             </div>
           </div>
-        <div class="row justify-content-md-center">
-          <div class="col-6 form-floating mb-3 ">
-            <label class="form-label text-dark ms-3" for="password">Password</label>
-            <input class="form-control" type="password" name="password" required />
-            <div class="form-text error password"></div>
+        <div class="row justify-content-md-center py-4">
+          <div class="col-6 form-floating position-relative">
+            <input class="form-control password" type="password" minlength="6" maxlength="32" name="password" id="password" placeholder="Password" required />
+            <label class="text-dark ms-2" for="password">Password</label>
+            <div class="invalid-tooltip password mt-2"></div>
           </div>
         </div>
-        <div class="col"><button class="btn btn-primary">Log In</button></div>
+        <div class="col"><button class="btn btn-primary mt-4">Submit</button></div>
       </form>
     </div>
   </section>
@@ -33,25 +33,36 @@
 <%- include('partials/footer'); -%>
 
 <script>
+
     const form = document.querySelector('form');
-    const nameError = document.querySelector('.name.error');
-    const emailError = document.querySelector('.email.error');
-    const passwordError = document.querySelector('.password.error');
+
+    // get fields to validate
+    const inputName = document.querySelector('.form-control.name');
+    const errorName = document.querySelector('.invalid-tooltip.name');
+    const inputEmail = document.querySelector('.form-control.email');
+    const errorEmail = document.querySelector('.invalid-tooltip.email');
+    const inputPassword = document.querySelector('.form-control.password');
+    const errorPassword = document.querySelector('.invalid-tooltip.password');
 
     form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+      
+      e.preventDefault();
         
         // reset errors
-        nameError.textContent = '';
-        emailError.textContent = ''; 
-        passwordError.textContent = '';     
+        inputName.setCustomValidity('');
+        errorName.textContent = '';
+        inputEmail.setCustomValidity(''); 
+        errorEmail.textContent = '';
+        inputPassword.setCustomValidity('');     
+        errorPassword.textContent = '';
 
-        // get values
+        // get values from form
         const name = form.name.value;
         const email = form.email.value;
         const password = form.password.value;
         
-        try {
+        try { // Attempt POST request
+            
             const res = await fetch('/signup', {
                 method: 'POST',
                 body: JSON.stringify({ name, email, password }),
@@ -59,15 +70,25 @@
             });
             const data = await res.json();
             console.log(data);
-            if (data.errors) {
-                nameError.textContent = data.errors.name;
-                emailError.textContent = data.errors.email; 
-                passwordError.textContent = data.errors.password; 
+            if (data.errors) { // If the response returns with an error, populate error labels
+                inputName.setCustomValidity(data.errors.name);
+                errorName.textContent = data.errors.name;
+                inputName.reportValidity();
+
+                inputEmail.setCustomValidity(data.errors.email); 
+                errorEmail.textContent = data.errors.email;
+                inputEmail.reportValidity();
+
+                inputPassword.setCustomValidity(data.errors.password);
+                errorPassword.textContent = data.errors.password;
+                inputPassword.reportValidity();
+
+                form.classList.add('was-validated');
+
             }
-            if (data.user) {
+            if (data.user) { // If the response returns with a user, redirect them to the homepage.
                 location.assign('/');
             }
-            
         }
         catch (err) {
             console.log(err);

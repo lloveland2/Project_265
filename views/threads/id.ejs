@@ -11,61 +11,86 @@
 </section>
 <section class="bg-dark text-light">
   <div class="container py-3">
-    <% posts.forEach(post => { %>
-      <div class="container striped d-block rounded rounded-2 py-1">
-        <p class="content"><%= post.content %></p>
-        <p class="author"><%= post.author.name %></p>
-        <p class="created-at">
-          <% age = Math.abs(time - post.createdAt) %>
-          <%- include('../partials/time.ejs') %>
-        </p>
+    <% if (posts.length> 0) { %>
+      <% time = Date.now() %>
+      <% posts.forEach(post => { %>
+        <div class="container striped d-block rounded rounded-2 py-1">
+          <p class="content"><%= post.content %></p>
+          <p class="author"><%= post.author.name %></p>
+          <p class="created-at">
+            <% age = Math.abs(time - post.createdAt) %>
+            <%- include('../partials/time.ejs') %>
+          </p>
+        </div>
+        <% }) %>
+    <% } else { %>
+
+      <div class="mx-auto">
+        <p class="lead pt-3 pb-2">There are no posts to display...</p>
       </div>
-      <% }) %>
+
+    <% } %>
+    <div class="container text-center position-relative">
+      <form class="needs-validation" action="/threads/id/<%= thread._id %>" method="POST" novalidate>
+        <div class="row justify-content-md-center py-4">
+          <div class="col-6 form-floating">
+            <textarea class="form-control content" style="height: 160px" type="text"  name="content" id="content" maxlength="3000" required></textarea>
+            <label class="text-dark ms-2" for="content">Comment</label>
+            <div class="invalid-tooltip content mt-2"></div>
+          </div>
+        </div>
+        <div class="col"><button class="btn btn-primary mt-4">Submit</button></div>
+      </form>
     </div>
-</section>
-<section class="bg-dark text-light">
-  <form action="/threads/id/<%= thread._id %>", method="POST" >
-    <textarea id="content" name="content" max="3000" required></textarea>
-    <div class="content error"></div>
-    <button type="submit">Submit</button>
-  </form>
+      </div>
 </section>
 
-
-<%- include('../partials/footer.ejs') %>
+<%- include('../partials/footer'); -%>
 
 <script>
-    const form = document.querySelector("form");
-    const contentError = document.querySelector(".content.error");
-  
-    form.addEventListener("submit", async (e) => {
+
+    const form = document.querySelector('form');
+
+    // get fields to validate
+    const inputContent = document.querySelector('.form-control.content');
+    const errorContent = document.querySelector('.invalid-tooltip.content');
+
+    form.addEventListener('submit', async (e) => {
+      
       e.preventDefault();
-  
-      // reset errors
-      contentError.textContent = "";
-  
-      // get values
-      const author = '<%= user._id %>';
-      const thread = '<%= thread._id %>';
-      const content = form.content.value;
-  
-      try {
-        const res = await fetch("/threads/id/" + thread, {
-          method: "POST",
-          body: JSON.stringify({ author, thread, content }),
-          headers: { "Content-Type": "application/json" },
-        });
-        const data = await res.json();
-        console.log(data);
-        if (data.errors) {
-          contentError.textContent = data.errors.content;
+        
+        // reset errors
+        inputContent.setCustomValidity(''); 
+        errorContent.textContent = '';
+
+        // get values
+        const author = '<%= user._id %>';
+        const content = form.content.value;
+        
+        try { // Attempt POST request
+            
+            const res = await fetch('/threads/id/<%= thread._id %>', {
+                method: 'POST',
+                body: JSON.stringify({ author, content }),
+                headers: {'Content-Type': 'application/json'}
+            });
+            const data = await res.json();
+            console.log(data);
+            if (data.errors) { // If the response returns with an error, populate error labels
+                inputContent.setCustomValidity(data.errors.content); 
+                errorContent.textContent = data.errors.content;
+                inputContent.reportValidity();
+
+                form.classList.add('was-validated');
+            }
+            if (data.post) { // If the response returns with a user, redirect them to the homepage.
+                location.reload();
+            }
         }
-        if (data.user) {
-          location.assign("/");
+        catch (err) {
+            console.log(err);
         }
-      } catch (err) {
-        console.log(err);
-      }
+        
     });
-  </script>
+</script>
 

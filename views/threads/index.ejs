@@ -11,34 +11,34 @@
         </div>
 
       <% if (threads.length> 0) { %>
-      <% time = Date.now() %>
+        <% time = Date.now() %>
 
-                
-      <% threads.forEach(thread => { %>
-                    
-      <div class="container striped d-block rounded rounded-2 py-1 ">
-        <a class="id link-underline link-underline-opacity-0 text-light" href="/threads/id/<%= thread._id%>">
-        <div class="mb-3">
-            <p class="h4 title"><%= thread.title %></p>
-          </div>
+
+        <% threads.forEach(thread => { %>
+
+        <div class="container striped d-block rounded rounded-2 py-1 ">
+          <a class="id link-underline link-underline-opacity-0 text-light" href="/threads/id/<%= thread._id%>">
           <div class="mb-3">
-            <p class="author">by <%= thread.author.name %></p>
-          </div>
-          <div class="mb-3">
-            <p class="created-at">            
-              <% age = Math.abs(time - thread.createdAt) %>
-              <%- include('../partials/time.ejs') %>
-              
-            </p>
-          </div>
-        </a>
-      </div>
+              <p class="h4 title"><%= thread.title %></p>
+            </div>
+            <div class="mb-3">
+              <p class="author">by <%= thread.author.name %></p>
+            </div>
+            <div class="mb-3">
+              <p class="created-at">            
+                <% age = Math.abs(time - thread.createdAt) %>
+                <%- include('../partials/time.ejs') %>
+
+              </p>
+            </div>
+          </a>
+        </div>
 
       <% })} else { %>
 
-      <div class="mx-auto">
-        <p class="lead pt-3 pb-2">There are no threads to display...</p>
-      </div>
+        <div class="mx-auto">
+          <p class="lead pt-3 pb-2">There are no threads to display...</p>
+        </div>
         
       <% } %>
 

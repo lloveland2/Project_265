@@ -1,64 +1,83 @@
-<%- include('../partials/header.ejs') %>
+<%- include('../partials/header'); -%>
 
 <section class="bg-dark text-light p-lg-0 pt-lg-5">
-  <div class="container text-center py-5">
-    <p class="lead">New Thread</p>
-    <form action="/threads/create" method="POST">
-      <div class="row justify-content-md-center">
-        <div class="col-6 form-floating mb-3">
-          <label class=" form-label text-dark ms-3" for="title">Title</label>
-          <input class="form-control" type="text" id="title" name="title" max="80" required />
-          <div class="form-text error title"></div>
-        </div>
-      </div>
-      <div class="row justify-content-md-center">
-        <div class="col-6 form-floating mb-3 ">
-            <label class="form-label text-dark ms-3" for="content">Post</label>
-            <textarea class="form-control" style="height: 250px" id="content" name="content" max="3000" required></textarea>
-            <div class="content error"></div>
+    <div class="container text-center py-5 position-relative">
+      <p class="lead">New Thread</p>
+      <form class="needs-validation" action="/threads/create" method="POST" novalidate>
+        <div class="row justify-content-md-center py-4">
+          <div class="col-6 form-floating">
+            <input class="form-control title" type="text" name="title" id="title" maxlength="80" placeholder="Title" required/>
+            <label class="text-dark ms-2" for="title">Title</label>
+            <div class="invalid-tooltip title mt-2"></div>
           </div>
-      </div>
-      <div class="col"><button class="btn btn-primary" type="submit">Submit</button></div>
-    </form>
-  </div>
-</section>
-      
-<%- include('../partials/footer.ejs') %>
+        </div>
+        <div class="row justify-content-md-center py-4">
+          <div class="col-6 form-floating">
+            <textarea class="form-control content" style="height: 160px" type="text"  name="content" id="content" maxlength="3000" required></textarea>
+            <label class="text-dark ms-2" for="content">Comment</label>
+            <div class="invalid-tooltip content mt-2"></div>
+          </div>
+        </div>
+        <div class="col"><button class="btn btn-primary mt-4">Submit</button></div>
+      </form>
+    </div>
+  </section>
+
+<%- include('../partials/footer'); -%>
 
 <script>
-    const form = document.querySelector("form");
-    const titleError = document.querySelector(".title.error");
-    const contentError = document.querySelector(".content.error");
-  
-    form.addEventListener("submit", async (e) => {
+
+    const form = document.querySelector('form');
+
+    // get fields to validate
+    const inputTitle = document.querySelector('.form-control.title');
+    const errorTitle = document.querySelector('.invalid-tooltip.title');
+    const inputContent = document.querySelector('.form-control.content');
+    const errorContent = document.querySelector('.invalid-tooltip.content');
+
+    form.addEventListener('submit', async (e) => {
+      
       e.preventDefault();
-  
-      // reset errors
-      titleError.textContent = "";
-      contentError.textContent = "";
-  
-      // get values
-      const author = '<%= user._id %>';
-      const title = form.title.value;
-      const content = form.content.value;
-  
-      try {
-        const res = await fetch("/threads/create", {
-          method: "POST",
-          body: JSON.stringify({ author, title, content }),
-          headers: { "Content-Type": "application/json" },
-        });
-        const data = await res.json();
-        console.log(data);
-        if (data.errors) {
-          titleError.textContent = data.errors.title;
-          contentError.textContent = data.errors.content;
+        
+        // reset errors
+        inputTitle.setCustomValidity('');
+        errorTitle.textContent = '';
+        inputContent.setCustomValidity(''); 
+        errorContent.textContent = '';
+
+        // get values
+        const author = '<%= user._id %>';
+        const title = form.title.value;
+        const content = form.content.value;
+        
+        try { // Attempt POST request
+            
+            const res = await fetch('/threads/create', {
+                method: 'POST',
+                body: JSON.stringify({ author, title, content }),
+                headers: {'Content-Type': 'application/json'}
+            });
+            const data = await res.json();
+            console.log(data);
+            if (data.errors) { // If the response returns with an error, populate error labels
+                inputTitle.setCustomValidity(data.errors.title);
+                errorTitle.textContent = data.errors.title;
+                inputTitle.reportValidity();
+
+                inputContent.setCustomValidity(data.errors.content); 
+                errorContent.textContent = data.errors.content;
+                inputContent.reportValidity();
+
+                form.classList.add('was-validated');
+
+            }
+            if (data.thread) { // If the response returns with a user, redirect them to the homepage.
+                location.assign('id/' + data.thread);
+            }
         }
-        if (data.user) {
-          location.assign("/");
+        catch (err) {
+            console.log(err);
         }
-      } catch (err) {
-        console.log(err);
-      }
+        
     });
-  </script>
+</script>

@@ -1,14 +1,13 @@
-const User = require("../models/User");
 const Thread = require("../models/Thread");
 const Post = require("../models/Post");
 
 // handle errors
-const handleErrors = (err) => {
-    console.log(err.message, err.code);
+const handleThreadErrors = (err) => {
+    console.log(err.message);
     let errors = { author: '', title: '', content: '' };
     
     // validation errors
-    if (err.message.includes('thread validation failed')) {
+    if (err.message.includes('Thread validation failed')) {
         Object.values(err.errors).forEach(({ properties }) => {
             errors[properties.path] = properties.message; 
         });
@@ -16,6 +15,21 @@ const handleErrors = (err) => {
 
     return errors;
 }
+
+const handlePostErrors = (err) => {
+    console.log(err.message);
+    let errors = { author: '', thread: '', content: '' };
+    
+    // validation errors
+    if (err.message.includes('Post validation failed')) {
+        Object.values(err.errors).forEach(({ properties }) => {
+            errors[properties.path] = properties.message; 
+        });
+    }
+
+    return errors;
+}
+
 
 const thread_index_get = (req, res) => {
   Thread.find({})
@@ -31,8 +45,8 @@ const thread_index_get = (req, res) => {
 };
 
 const thread_id_get = (req, res) => {
-  id = req.params.id
-  thread = Thread.findById(id)
+  const id = req.params.id
+  Thread.findById(id)
   .populate({ path: 'author', select: 'name' })
   .then((thread) => {
     Post.find({ thread: req.params.id })
@@ -48,14 +62,16 @@ const thread_id_get = (req, res) => {
 };
 
 const thread_id_post = async (req, res) => {
+  const id = req.params.id
   try {
-      const { author, thread, content } = req.body;
+      const { author, content } = req.body;
       createdAt = Date.now();
-      Post.create({ author, thread, content, createdAt })
-      .then(res.redirect('/threads/id/'+ thread) );
+      const post = new Post({ author, thread: id, content, createdAt })
+      post.save();
+      res.status(201).json({ post: post._id });
   }
   catch (err) {
-      const errors = handleErrors(err);
+      const errors = handlePostErrors(err);
       res.status(400).json({ errors });
   }
 
@@ -67,19 +83,19 @@ const thread_create_get = (req, res) => {
 
 
 const thread_create_post = async (req, res) => {
-    try {
-        const { author, title, content } = req.body;
-        createdAt = Date.now();
-        const thread = new Thread({author, title, createdAt})
-        const post = new Post({ author, thread: thread._id, content, createdAt })
-        thread.save()
-        .then(post.save()
-        .then(res.redirect('/threads/id/'+ thread._id) ));
-    }
-    catch (err) {
-        const errors = handleErrors(err);
-        res.status(400).json({ errors });
-    }
+  try {
+      const { author, title, content } = req.body;
+      createdAt = Date.now();
+      const thread = new Thread({author, title, createdAt})
+      const post = new Post({ author, thread: thread._id, content, createdAt })
+      thread.save()
+      .then(post.save())
+      res.status(201).json({ thread: thread._id })
+  }
+  catch (err) {
+      const errors = handleThreadErrors(err);
+      res.status(400).json({ errors });
+  }
 
 };
 
